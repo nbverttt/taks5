@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчёт по заданию 5 - Авторизация с сессиями</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .step {
+            margin-bottom: 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: box-shadow 0.3s;
+        }
+        
+        .step:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .step-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .step-title {
+            font-size: 20px;
+            color: #333;
+        }
+        
+        .step-body {
+            padding: 20px;
+        }
+        
+        .step-description {
+            margin-bottom: 20px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .step-description ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .step-description li {
+            margin-bottom: 5px;
+        }
+        
+        .screenshot {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .screenshot img {
+            max-width: 100%;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .screenshot-caption {
+            margin-top: 10px;
+            color: #777;
+            font-size: 14px;
+            font-style: italic;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #777;
+            border-top: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Отчёт по заданию 5</h1>
+            <p>Реализация авторизации с использованием сессий</p>
+        </div>
+        
+        <div class="content">
+            
+            <!-- Введение -->
+            <div class="info">
+                <strong>🎯 Цель задания:</strong> Реализовать возможность входа с паролем и логином с использованием сессии для изменения отправленных данных. Пароль и логин генерируются автоматически при первоначальной отправке формы.
+            </div>
+            
+            <!-- Шаг 1: Добавление полей в БД -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Добавление полей login и password_hash в базу данных</div>
+                </div>
+                <div class="step-body">
+                    <div class="step-description">
+                        <p>Первым делом нужно модифицировать структуру таблицы <code>application</code>, добавив поля для хранения логина и хеша пароля.</p>
+                        <p><strong>Выполненные действия:</strong></p>
+                        <ul>
+                            <li>Подключился к MySQL через SSH: <code>mysql -u u82591 -p</code></li>
+                            <li>Выбрал базу данных: <code>USE u82591;</code></li>
+                            <li>Добавил поля командой: <code>ALTER TABLE application ADD COLUMN login VARCHAR(50) UNIQUE, ADD COLUMN password_hash VARCHAR(32);</code></li>
+                            <li>Проверил структуру таблицы: <code>DESCRIBE application;</code></li>
+                        </ul>
+                        <div class="success">
+                            ✅ <strong>Результат:</strong> Поля <code>login</code> (уникальное, до 50 символов) и <code>password_hash</code> (32 символа для MD5) успешно добавлены.
+                        </div>
+                    </div>
+                    <div class="screenshot">
+                        <img src="Снимок.PNG" alt="Добавление полей в БД">
+                        <div class="screenshot-caption">Скриншот 1: Процесс добавления полей login и password_hash в таблицу application</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Шаг 2: Проверка структуры БД -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Проверка структуры базы данных</div>
+                </div>
+                <div class="step-body">
+                    <div class="step-description">
+                        <p>После добавления полей необходимо убедиться, что структура таблицы правильная.</p>
+                        <p><strong>Проверяем:</strong></p>
+                        <ul>
+                            <li>Поле <code>login</code> имеет тип VARCHAR(50) и ключ UNI (уникальный)</li>
+                            <li>Поле <code>password_hash</code> имеет тип VARCHAR(32)</li>
+                            <li>Все остальные поля на месте (fio, phone, email, birth_date, gender, biography, contract_accepted)</li>
+                        </ul>
+                        <div class="success">
+                            ✅ <strong>Результат:</strong> Структура БД соответствует требованиям. 11 полей, включая новые login и password_hash.
+                        </div>
+                    </div>
+                    <div class="screenshot">
+                        <img src="Снимок.PNG" alt="Структура БД">
+                        <div class="screenshot-caption">Скриншот 1 (нижняя часть): Результат DESCRIBE application - все поля на месте</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Шаг 3: Первая отправка формы -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Первая отправка формы и генерация логина/пароля</div>
+                </div>
+                <div class="step-body">
+                    <div class="step-description">
+                        <p>При первой отправке формы происходит:</p>
+                        <ul>
+                            <li>Валидация всех полей формы</li>
+                            <li>Генерация уникального логина (функция <code>generate_login()</code>)</li>
+                            <li>Генерация случайного пароля (функция <code>generate_password()</code>)</li>
+                            <li>Хеширование пароля через <code>md5()</code></li>
+                            <li>Сохранение всех данных в БД</li>
+                            <li>Отображение логина и пароля пользователю <strong>один раз</strong></li>
+                        </ul>
+                        <div class="success">
+                            ✅ <strong>Результат:</strong> Сгенерирован логин <code>coder4372296e</code> и пароль. Данные сохранены в БД с ID=2.
+                        </div>
+                    </div>
+                    <div class="screenshot">
+                        <img src="c3.PNG" alt="Первая отправка формы">
+                        <div class="screenshot-caption">Скриншот 3: Проверка в БД - логин и хеш пароля сохранены</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Шаг 4: Проверка данных в БД -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Проверка сохранённых данных в базе данных</div>
+                </div>
+                <div class="step-body">
+                    <div class="step-description">
+                        <p>Проверяем, что данные корректно сохранились:</p>
+                        <pre><code>SELECT id, fio, email, login FROM application WHERE id = 2;</code></pre>
+                        <ul>
+                            <li>ID: 2</li>
+                            <li>ФИО: Иванов Иван Иваныч</li>
+                            <li>Email: nnnnnf@mail.ru</li>
+                            <li>Логин: coder4372296e</li>
+                        </ul>
+                        <div class="success">
+                            ✅ <strong>Результат:</strong> Все данные корректно сохранены в БД.
+                        </div>
+                    </div>
+                    <div class="screenshot">
+                        <img src="c5.PNG" alt="Данные в БД">
+                        <div class="screenshot-caption">Скриншот 5: Запрос SELECT показывает сохранённые данные</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Шаг 5: Авторизация -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Вход в систему (авторизация)</div>
+                </div>
+                <div class="step-body">
+                    <div class="step-description">
+                        <p>После получения логина и пароля, пользователь может войти для редактирования данных:</p>
+                        <ul>
+                            <li>Переход на страницу <code>login.php</code></li>
+                            <li>Ввод логина и пароля</li>
+                            <li>Проверка через БД: сравнение хеша пароля</li>
+                            <li>Создание сессии: <code>$_SESSION['login']</code> и <code>$_SESSION['uid']</code></li>
+                            <li>Перенаправление на главную форму с загруженными данными</li>
+                        </ul>
+                        <div class="success">
+                            ✅ <strong>Результат:</strong> Успешный вход. Отображается сообщение "Вы вошли как coder4372296e (ID: 2)".
+                        </div>
+                    </div>
+                    <div class="screenshot">
+                        <img src="c4.PNG" alt="Форма после входа">
+                        <div class="screenshot-caption">Скриншот 4: Форма после авторизации - все поля заполнены данными из БД</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Шаг 6: Валидация с ошибками -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Валидация формы с ошибками</div>
+                </div>
+                <div class="step-body">
+                    <div class="step-description">
+                        <p>Проверка работы валидации как для неавторизованных, так и для авторизованных пользователей:</p>
+                        <ul>
+                            <li>Пустые поля подсвечиваются красной рамкой</li>
+                            <li>Сообщения об ошибках выводятся под каждым полем</li>
+                            <li>Правильно заполненные поля сохраняют свои значения</li>
+                            <li>Данные сохраняются в Cookies для неавторизованных пользователей</li>
+                        </ul>
+                        <div class="warning">
+                            ⚠️ <strong>Важно:</strong> Валидация работает одинаково при создании новой записи и при редактировании существующей.
+                        </div>
+                    </div>
+                    <div class="screenshot">
+                        <img src="с6.PNG" alt="Форма с ошибками">
+                        <div class="screenshot-caption">Скриншот 6: Форма с ошибками валидации - поля подсвечены красным</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Шаг 7: Cookies -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">7</div>
+                    <div class="step-title">Работа с Cookies</div>
+                </div>
+                <div class="step-body">
+                    <div class="step-description">
+                        <p>Для неавторизованных пользователей данные формы сохраняются в Cookies:</p>
+                        <ul>
+                            <li><code>fio_value</code>, <code>phone_value</code>, <code>email_value</code> - значения полей</li>
+                            <li><code>fio_error</code>, <code>phone_error</code> - флаги ошибок</li>
+                            <li><code>fio_error_msg</code> - текст сообщения об ошибке</li>
+                            <li>Срок хранения: 30 дней для значений, 24 часа для ошибок</li>
+                        </ul>
+                        <div class="success">
+                            ✅ <strong>Результат:</strong> Cookies корректно сохраняются. При повторном открытии формы данные восстанавливаются.
+                        </div>
+                    </div>
+                    <div class="screenshot">
+                        <img src="c7.PNG" alt="Cookies в браузере">
+                        <div class="screenshot-caption">Скриншот 7: DevTools браузера - Cookies с данными формы</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Шаг 8: Git -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">8</div>
+                    <div class="step-title">Работа с Git и отправка на GitHub</div>
+                </div>
+                <div class="step-body">
+                    <div class="step-description">
+                        <p>Создание репозитория и отправка кода на GitHub:</p>
+                        <ul>
+                            <li>Инициализация Git: <code>git init</code></li>
+                            <li>Добавление файлов: <code>git add .</code></li>
+                            <li>Создание коммита: <code>git commit -m "Задание 5: Форма с авторизацией"</code></li>
+                            <li>Привязка к удалённому репозиторию: <code>git remote add origin https://github.com/nbverttt/task5.git</code></li>
+                            <li>Отправка на GitHub: <code>git push -u origin main</code></li>
+                        </ul>
+                        <div class="success">
+                            ✅ <strong>Результат:</strong> Код успешно загружен на GitHub.
+                        </div>
+                    </div>
+                    <div class="screenshot">
+                        <img src="git_screen.PNG" alt="Git push">
+                        <div class="screenshot-caption">Скриншот 8: Процесс отправки кода на GitHub</div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 Задание 5 - Авторизация с сессиями</p>
+        </div>
+    </div>
+</body>
+</html>
